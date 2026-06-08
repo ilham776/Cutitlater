@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- ═══ SEO ═══ -->
+  <title>CutItNow — Cut & Download YouTube Clips Instantly</title>
+  <meta name="description" content="CutItNow lets you cut any YouTube video into a clip and download it as MP4 or MP3. Set exact start and end times. Free, instant, no signup."/>
+  <meta name="keywords" content="youtube clip downloader, cut youtube video, download youtube segment, youtube to mp3, youtube to mp4, trim youtube video"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://cutitnow.com/"/>
+  <meta property="og:title" content="CutItNow — Cut & Download YouTube Clips"/>
+  <meta property="og:description" content="Cut any YouTube video to exact seconds. Download as MP4 or MP3. Free and instant."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://cutitnow.com/"/>
+
+  <!-- ═══ Fonts ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:      #E53935;
+      --red-dark: #C62828;
+      --bg:       #06080F;
+      --card:     #0A0C15;
+      --border:   #12151F;
+      --border2:  #1A1D2E;
+      --text:     #D0D4E8;
+      --muted:    #3A3F5C;
+      --mono:     'Space Mono', monospace;
+      --display:  'Bebas Neue', sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 32px 16px 24px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 2px;
+      background: var(--red);
+    }
+
+    .logo-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .logo-svg { flex-shrink: 0; }
+
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      letter-spacing: 0.08em;
+      color: #fff;
+      line-height: 1;
+    }
+    h1 span { color: var(--red); }
+
+    .tagline {
+      font-size: clamp(0.5rem, 1.9vw, 0.62rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+      padding: 0 8px;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 680px;
+      margin: 20px auto;
+      padding: 0 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(16px, 4vw, 28px);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    /* ── Labels ── */
+    .label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* ── URL input row ── */
+    .url-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    #url-input {
+      flex: 1;
+      min-width: 0;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--mono);
+      /* max(16px,...) prevents iOS zoom */
+      font-size: max(16px, 0.8rem);
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #url-input:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(229,57,53,0.1);
+    }
+    #url-input::placeholder { color: #1E2235; }
+
+    /* Paste button — visible only on touch devices */
+    #paste-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 48px;
+      touch-action: manipulation;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    #paste-btn:active {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #paste-btn { display: flex; }
+    }
+
+    /* ── Video preview ── */
+    #video-preview {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+    }
+    #video-preview img {
+      width: 80px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    #video-info { flex: 1; min-width: 0; }
+    #video-title {
+      font-size: clamp(0.66rem, 2.2vw, 0.76rem);
+      color: var(--text);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #video-duration {
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Format toggle ── */
+    .format-row {
+      display: flex;
+      gap: 10px;
+    }
+    .fmt-btn {
+      flex: 1;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 14px 10px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: clamp(0.66rem, 2.2vw, 0.75rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      min-height: 48px;
+      touch-action: manipulation;
+      /* icon + label stacked on mobile */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .fmt-btn .fmt-icon { font-size: 1rem; }
+    .fmt-btn.active {
+      background: rgba(229,57,53,0.1);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ── Time pickers ── */
+    .time-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .time-half {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .time-half-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .time-group {
+      display: flex;
+      gap: 4px;
+    }
+    .time-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .time-field span {
+      font-size: clamp(0.48rem, 1.6vw, 0.56rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: center;
+    }
+    .time-field input {
+      width: 100%;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 7px;
+      color: #fff;
+      font-family: var(--display);
+      font-size: max(16px, clamp(1.1rem, 4.5vw, 1.7rem));
+      letter-spacing: 0.04em;
+      text-align: center;
+      padding: clamp(7px, 2vw, 10px) 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      -moz-appearance: textfield;
+      /* Large tap target */
+      min-height: 52px;
+      touch-action: manipulation;
+    }
+    .time-field input::-webkit-outer-spin-button,
+    .time-field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .time-field input:focus { border-color: var(--red); }
+
+    /* Stepper buttons for mobile */
+    .time-stepper {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .step-btn {
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 6px;
+      touch-action: manipulation;
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .step-btn:active { color: var(--red); border-color: var(--red); }
+
+    .time-arrow {
+      color: var(--border2);
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      padding-bottom: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ── Clip duration badge ── */
+    #clip-duration {
+      display: none;
+      margin-top: 8px;
+      text-align: center;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 6px 10px;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+    }
+    #clip-duration span { color: var(--red); }
+
+    /* ── CTA button ── */
+    #cut-btn {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: clamp(14px, 3vw, 16px);
+      font-family: var(--display);
+      font-size: clamp(1.1rem, 4.5vw, 1.3rem);
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(229,57,53,0.25);
+      transition: all 0.2s;
+      min-height: 56px;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    #cut-btn:hover:not(:disabled) {
+      background: #EF5350;
+      box-shadow: 0 6px 28px rgba(229,57,53,0.45);
+      transform: translateY(-1px);
+    }
+    #cut-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+    #cut-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Progress bar ── */
+    #progress-wrap {
+      display: none;
+      margin-top: 10px;
+      background: #080A12;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      overflow: hidden;
+      height: 4px;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--red);
+      transition: width 0.3s ease;
+      border-radius: 6px;
+    }
+    #progress-bar.indeterminate {
+      width: 40%;
+      animation: slide 1.4s ease-in-out infinite;
+    }
+    @keyframes slide {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+
+    /* ── Status ── */
+    #status {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: clamp(0.66rem, 2.1vw, 0.74rem);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+    }
+    #status.loading {
+      display: block;
+      background: rgba(229,57,53,0.08);
+      border: 1px solid rgba(229,57,53,0.2);
+      color: var(--red);
+    }
+    #status.success {
+      display: block;
+      background: rgba(76,175,80,0.08);
+      border: 1px solid rgba(76,175,80,0.2);
+      color: #4CAF50;
+    }
+    #status.error {
+      display: block;
+      background: rgba(229,57,53,0.08);
+      border: 1px solid rgba(229,57,53,0.3);
+      color: #FF6B6B;
+    }
+
+    /* ── Download button ── */
+    #download-btn {
+      display: none;
+      width: 100%;
+      margin-top: 10px;
+      background: #071A0E;
+      border: 1px solid #145222;
+      color: #4CAF50;
+      border-radius: 8px;
+      padding: 16px 14px;
+      font-family: var(--mono);
+      font-size: clamp(0.7rem, 2.3vw, 0.8rem);
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      min-height: 56px;
+      line-height: 1.4;
+      touch-action: manipulation;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+    #download-btn:active {
+      opacity: 0.85;
+    }
+
+    /* ── Ad slots ── */
+    .ad-slot {
+      margin: 14px 0;
+      background: var(--card);
+      border: 1px dashed var(--border2);
+      border-radius: 8px;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px 16px 28px;
+      color: #171A26;
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════ */
+
+    @media (max-width: 600px) {
+      header { padding: 24px 12px 20px; }
+      .logo-svg { width: 38px; height: 38px; }
+      main { margin: 14px auto; padding: 0 10px; }
+
+      /* Show steppers on touch screens */
+      .time-stepper { display: flex; }
+
+      /* Stack time pickers vertically */
+      .time-row {
+        flex-direction: column;
+        gap: 14px;
+        align-items: stretch;
+      }
+      .time-half { width: 100%; }
+      .time-arrow {
+        display: none; /* replaced by labels "Start" / "End" */
+      }
+
+      .fmt-btn { padding: 14px 8px; }
+    }
+
+    @media (max-width: 380px) {
+      h1 { font-size: 2rem; }
+      .tagline { font-size: 0.46rem; letter-spacing: 0.1em; }
+      .card { border-radius: 10px; }
+      .time-field input { min-height: 46px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <div class="logo-row">
+      <svg class="logo-svg" width="52" height="52" viewBox="0 0 58 58" fill="none">
+        <circle cx="29" cy="29" r="4.5" fill="#E53935"/>
+        <path d="M29 29 L8 10"  stroke="#E53935" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M29 29 L14 6"  stroke="#E53935" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M8 10 L14 6"   stroke="#E53935" stroke-width="2"   stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M29 29 L50 48" stroke="#C62828" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M29 29 L44 52" stroke="#C62828" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M50 48 L44 52" stroke="#C62828" stroke-width="2"   stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="7"  cy="12" r="6"   stroke="#E53935" stroke-width="2.5" fill="none"/>
+        <circle cx="51" cy="46" r="6"   stroke="#C62828" stroke-width="2.5" fill="none"/>
+        <circle cx="7"  cy="12" r="2.5" fill="#E53935" opacity="0.35"/>
+        <circle cx="51" cy="46" r="2.5" fill="#C62828" opacity="0.35"/>
+      </svg>
+      <h1>Cut<span>It</span>Now</h1>
+    </div>
+    <p class="tagline">Precision clip extraction — any moment, any format</p>
+  </header>
+
+  <!-- ═══ AD SLOT TOP ═══ -->
+  <div style="max-width:680px; margin:0 auto; padding:0 12px;">
+    <div class="ad-slot">Ad — Google AdSense goes here</div>
+  </div>
+
+  <!-- ═══ MAIN CARD ═══ -->
+  <main>
+    <div class="card">
+
+      <!-- URL -->
+      <span class="label">🔗 YouTube URL</span>
+      <div class="url-row">
+        <input type="url" id="url-input"
+          placeholder="https://www.youtube.com/watch?v=..."
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          inputmode="url"/>
+        <button id="paste-btn" aria-label="Paste URL">
+          📋 Paste
+        </button>
+      </div>
+
+      <!-- Preview -->
+      <div id="video-preview">
+        <img id="thumb" src="" alt="thumbnail"/>
+        <div id="video-info">
+          <div id="video-title">—</div>
+          <div id="video-duration">—</div>
+        </div>
+      </div>
+
+      <hr class="divider"/>
+
+      <!-- Format -->
+      <span class="label">Output Format</span>
+      <div class="format-row">
+        <button class="fmt-btn active" data-fmt="mp4">
+          <span class="fmt-icon">🎬</span>MP4 — Video
+        </button>
+        <button class="fmt-btn" data-fmt="mp3">
+          <span class="fmt-icon">🎵</span>MP3 — Audio
+        </button>
+      </div>
+
+      <hr class="divider"/>
+
+      <!-- Time pickers -->
+      <span class="label">⏱ Clip Range</span>
+      <div class="time-row">
+
+        <!-- START -->
+        <div class="time-half">
+          <div class="time-half-label">▶ Start</div>
+          <div class="time-group">
+            <div class="time-field">
+              <span>HH</span>
+              <input type="number" id="sh" min="0" max="23" value="0" inputmode="numeric"/>
+            </div>
+            <div class="time-field">
+              <span>MM</span>
+              <input type="number" id="sm" min="0" max="59" value="0" inputmode="numeric"/>
+            </div>
+            <div class="time-field">
+              <span>SS</span>
+              <input type="number" id="ss" min="0" max="59" value="15" inputmode="numeric"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="time-arrow">→</div>
+
+        <!-- END -->
+        <div class="time-half">
+          <div class="time-half-label">⏹ End</div>
+          <div class="time-group">
+            <div class="time-field">
+              <span>HH</span>
+              <input type="number" id="eh" min="0" max="23" value="0" inputmode="numeric"/>
+            </div>
+            <div class="time-field">
+              <span>MM</span>
+              <input type="number" id="em" min="0" max="59" value="0" inputmode="numeric"/>
+            </div>
+            <div class="time-field">
+              <span>SS</span>
+              <input type="number" id="es" min="0" max="59" value="45" inputmode="numeric"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live clip duration hint -->
+      <div id="clip-duration">Clip length: <span id="clip-len">—</span></div>
+
+      <hr class="divider"/>
+
+      <button id="cut-btn">
+        <span id="cut-icon">✂</span>
+        <span id="cut-label">CUT &amp; DOWNLOAD</span>
+      </button>
+
+      <!-- Progress -->
+      <div id="progress-wrap"><div id="progress-bar" class="indeterminate"></div></div>
+
+      <div id="status"></div>
+      <a id="download-btn" download>💾 Save Clip to Device</a>
+
+    </div>
+
+    <!-- ═══ AD SLOT BOTTOM ═══ -->
+    <div class="ad-slot">Ad — Google AdSense goes here</div>
+
+  </main>
+
+  <footer>CutItNow — Made for editors</footer>
+
+  <script>
+    const API = "http://localhost:8000";
+    let selectedFormat = "mp4";
+
+    /* ── Format toggle ── */
+    document.querySelectorAll(".fmt-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".fmt-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedFormat = btn.dataset.fmt;
+      });
+    });
+
+    /* ── Paste button (mobile) ── */
+    document.getElementById("paste-btn").addEventListener("click", async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        const input = document.getElementById("url-input");
+        input.value = text.trim();
+        input.dispatchEvent(new Event("input"));
+      } catch (_) {
+        document.getElementById("url-input").focus();
+      }
+    });
+
+    /* ── Auto-fetch video info on URL input ── */
+    let infoTimer = null;
+    document.getElementById("url-input").addEventListener("input", e => {
+      clearTimeout(infoTimer);
+      const url = e.target.value.trim();
+      if (!url.includes("youtube.com") && !url.includes("youtu.be")) return;
+      infoTimer = setTimeout(() => fetchInfo(url), 800);
+    });
+
+    async function fetchInfo(url) {
+      try {
+        const res  = await fetch(`${API}/info?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+        if (!res.ok) return;
+        document.getElementById("thumb").src = data.thumbnail;
+        document.getElementById("video-title").textContent = data.title;
+        document.getElementById("video-duration").textContent = "Duration: " + formatDuration(data.duration);
+        document.getElementById("video-preview").style.display = "flex";
+      } catch (_) {}
+    }
+
+    /* ── Clip duration calculator ── */
+    function toSeconds(h, m, s) {
+      return (+document.getElementById(h).value || 0) * 3600
+           + (+document.getElementById(m).value || 0) * 60
+           + (+document.getElementById(s).value || 0);
+    }
+    function updateClipDuration() {
+      const start = toSeconds("sh","sm","ss");
+      const end   = toSeconds("eh","em","es");
+      const diff  = end - start;
+      const badge = document.getElementById("clip-duration");
+      const len   = document.getElementById("clip-len");
+      if (diff > 0) {
+        badge.style.display = "block";
+        len.textContent = formatDuration(diff);
+      } else {
+        badge.style.display = "none";
+      }
+    }
+    ["sh","sm","ss","eh","em","es"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateClipDuration);
+    });
+    updateClipDuration();
+
+    /* ── Helpers ── */
+    function formatDuration(s) {
+      s = Math.round(s);
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+    }
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function buildTime(h, m, s) {
+      return `${pad(document.getElementById(h).value||0)}:${pad(document.getElementById(m).value||0)}:${pad(document.getElementById(s).value||0)}`;
+    }
+
+    function setStatus(type, msg) {
+      const el = document.getElementById("status");
+      el.className = type;
+      el.textContent = msg;
+    }
+
+    function setLoading(on) {
+      const btn = document.getElementById("cut-btn");
+      const bar = document.getElementById("progress-wrap");
+      btn.disabled = on;
+      document.getElementById("cut-label").textContent = on ? "Processing…" : "CUT & DOWNLOAD";
+      document.getElementById("cut-icon").textContent  = on ? "⏳" : "✂";
+      bar.style.display = on ? "block" : "none";
+    }
+
+    /* ── Main action ── */
+    document.getElementById("cut-btn").addEventListener("click", async () => {
+      const url = document.getElementById("url-input").value.trim();
+      if (!url) { setStatus("error", "Paste a YouTube URL first."); return; }
+
+      const start = buildTime("sh","sm","ss");
+      const end   = buildTime("eh","em","es");
+
+      setLoading(true);
+      document.getElementById("download-btn").style.display = "none";
+      setStatus("loading", "⏳ Fetching stream and cutting clip — this takes 10–30 seconds…");
+
+      try {
+        const res = await fetch(`${API}/clip`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, start, end, format: selectedFormat }),
+        });
+
+        if (!res.ok) { const e = await res.json(); throw new Error(e.detail || "Unknown error"); }
+
+        const blob    = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const dlBtn   = document.getElementById("download-btn");
+        dlBtn.href     = blobUrl;
+        dlBtn.download = `cutitnow_clip.${selectedFormat}`;
+        dlBtn.style.display = "flex";
+        setStatus("success", `✅ Done! Clip ready — ${start} → ${end}`);
+
+      } catch (err) {
+        setStatus("error", `Error: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+
+</body>
+</html>
