@@ -41,13 +41,14 @@
       color: var(--text);
       font-family: var(--mono);
       min-height: 100vh;
+      /* Prevent horizontal scroll on mobile */
       overflow-x: hidden;
     }
 
     /* ── Header ── */
     header {
       text-align: center;
-      padding: 32px 16px 24px;
+      padding: 40px 16px 28px;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
@@ -55,7 +56,7 @@
       content: '';
       position: absolute;
       bottom: -1px; left: 50%; transform: translateX(-50%);
-      width: 120px; height: 2px;
+      width: 160px; height: 2px;
       background: var(--red);
     }
 
@@ -63,13 +64,15 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
+
+    /* Shrink logo on small screens */
     .logo-svg { flex-shrink: 0; }
 
     h1 {
       font-family: var(--display);
-      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      font-size: clamp(2.4rem, 8vw, 3.8rem); /* scales with screen width */
       letter-spacing: 0.08em;
       color: #fff;
       line-height: 1;
@@ -77,8 +80,8 @@
     h1 span { color: var(--red); }
 
     .tagline {
-      font-size: clamp(0.5rem, 1.9vw, 0.62rem);
-      letter-spacing: 0.16em;
+      font-size: clamp(0.52rem, 2vw, 0.62rem);
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--muted);
       margin-top: 6px;
@@ -88,7 +91,7 @@
     /* ── Layout ── */
     main {
       max-width: 680px;
-      margin: 20px auto;
+      margin: 24px auto;
       padding: 0 12px;
     }
 
@@ -96,18 +99,18 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: clamp(16px, 4vw, 28px);
+      padding: clamp(16px, 4vw, 28px); /* less padding on small screens */
     }
 
     .divider {
       border: none;
       border-top: 1px solid var(--border);
-      margin: 16px 0;
+      margin: 18px 0;
     }
 
     /* ── Labels ── */
     .label {
-      font-size: 0.58rem;
+      font-size: 0.6rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--red);
@@ -116,64 +119,26 @@
       margin-bottom: 10px;
     }
 
-    /* ── URL input row ── */
-    .url-row {
-      display: flex;
-      gap: 8px;
-      align-items: stretch;
-    }
-
+    /* ── URL input ── */
     #url-input {
-      flex: 1;
-      min-width: 0;
+      width: 100%;
       background: #080A12;
       border: 1px solid var(--border2);
       border-radius: 8px;
       color: var(--text);
       font-family: var(--mono);
-      /* max(16px,...) prevents iOS zoom */
-      font-size: max(16px, 0.8rem);
+      font-size: clamp(0.72rem, 2.5vw, 0.82rem);
       padding: 13px 14px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
+      /* Prevent zoom on focus in iOS */
+      font-size: max(16px, 0.82rem);
     }
     #url-input:focus {
       border-color: var(--red);
       box-shadow: 0 0 0 3px rgba(229,57,53,0.1);
     }
     #url-input::placeholder { color: #1E2235; }
-
-    /* Paste button — visible only on touch devices */
-    #paste-btn {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      background: #080A12;
-      border: 1px solid var(--border2);
-      border-radius: 8px;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0 14px;
-      cursor: pointer;
-      white-space: nowrap;
-      min-height: 48px;
-      touch-action: manipulation;
-      transition: border-color 0.15s, color 0.15s;
-      flex-shrink: 0;
-    }
-    #paste-btn:active {
-      border-color: var(--red);
-      color: var(--red);
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-      #paste-btn { display: flex; }
-    }
 
     /* ── Video preview ── */
     #video-preview {
@@ -185,7 +150,6 @@
       border: 1px solid var(--border2);
       border-radius: 8px;
       padding: 10px;
-      position: relative;
     }
     #video-preview img {
       width: 80px;
@@ -194,18 +158,18 @@
       border-radius: 4px;
       flex-shrink: 0;
     }
-    #video-info { flex: 1; min-width: 0; }
     #video-title {
-      font-size: clamp(0.66rem, 2.2vw, 0.76rem);
+      font-size: clamp(0.68rem, 2.2vw, 0.78rem);
       color: var(--text);
       line-height: 1.4;
+      /* Truncate long titles on mobile */
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     #video-duration {
-      font-size: 0.6rem;
+      font-size: 0.62rem;
       color: var(--muted);
       margin-top: 3px;
     }
@@ -216,28 +180,20 @@
       gap: 10px;
     }
     .fmt-btn {
-      flex: 1;
+      flex: 1; /* each button takes equal width on mobile */
       background: #080A12;
       border: 1px solid var(--border2);
-      border-radius: 8px;
-      padding: 14px 10px;
+      border-radius: 7px;
+      padding: 11px 10px;
       color: var(--muted);
       font-family: var(--mono);
-      font-size: clamp(0.66rem, 2.2vw, 0.75rem);
+      font-size: clamp(0.65rem, 2.2vw, 0.75rem);
       font-weight: 700;
       letter-spacing: 0.06em;
       cursor: pointer;
       transition: all 0.15s;
       text-align: center;
-      min-height: 48px;
-      touch-action: manipulation;
-      /* icon + label stacked on mobile */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
-    .fmt-btn .fmt-icon { font-size: 1rem; }
     .fmt-btn.active {
       background: rgba(229,57,53,0.1);
       border-color: var(--red);
@@ -248,36 +204,21 @@
     .time-row {
       display: flex;
       align-items: flex-end;
-      gap: 8px;
-    }
-
-    .time-half {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
       gap: 6px;
     }
-
-    .time-half-label {
-      font-size: 0.55rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
     .time-group {
       display: flex;
-      gap: 4px;
+      gap: 5px;
+      flex: 1;
     }
     .time-field {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
     .time-field span {
-      font-size: clamp(0.48rem, 1.6vw, 0.56rem);
+      font-size: clamp(0.5rem, 1.8vw, 0.58rem);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
@@ -288,97 +229,54 @@
       width: 100%;
       background: #080A12;
       border: 1px solid var(--border2);
-      border-radius: 7px;
+      border-radius: 8px;
       color: #fff;
       font-family: var(--display);
-      font-size: max(16px, clamp(1.1rem, 4.5vw, 1.7rem));
+      /* Scales down nicely on small screens */
+      font-size: clamp(1.2rem, 5vw, 1.7rem);
       letter-spacing: 0.04em;
       text-align: center;
-      padding: clamp(7px, 2vw, 10px) 2px;
+      padding: clamp(6px, 2vw, 10px) 2px;
       outline: none;
       transition: border-color 0.2s;
       -moz-appearance: textfield;
-      /* Large tap target */
-      min-height: 52px;
-      touch-action: manipulation;
+      /* Prevent iOS zoom */
+      font-size: max(16px, clamp(1.1rem, 4vw, 1.7rem));
     }
     .time-field input::-webkit-outer-spin-button,
     .time-field input::-webkit-inner-spin-button { -webkit-appearance: none; }
     .time-field input:focus { border-color: var(--red); }
 
-    /* Stepper buttons for mobile */
-    .time-stepper {
-      display: none;
-      flex-direction: column;
-      gap: 2px;
-      flex-shrink: 0;
-    }
-    .step-btn {
-      background: #080A12;
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      color: var(--muted);
-      font-size: 0.7rem;
-      line-height: 1;
-      cursor: pointer;
-      padding: 4px 6px;
-      touch-action: manipulation;
-      transition: color 0.15s, border-color 0.15s;
-      user-select: none;
-    }
-    .step-btn:active { color: var(--red); border-color: var(--red); }
-
     .time-arrow {
       color: var(--border2);
       font-size: clamp(0.9rem, 3vw, 1.2rem);
-      padding-bottom: 14px;
+      padding-bottom: 12px;
       flex-shrink: 0;
     }
-
-    /* ── Clip duration badge ── */
-    #clip-duration {
-      display: none;
-      margin-top: 8px;
-      text-align: center;
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      padding: 6px 10px;
-      background: #080A12;
-      border: 1px solid var(--border2);
-      border-radius: 6px;
-    }
-    #clip-duration span { color: var(--red); }
 
     /* ── CTA button ── */
     #cut-btn {
       width: 100%;
-      margin-top: 8px;
+      margin-top: 6px;
       background: var(--red);
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: clamp(14px, 3vw, 16px);
+      padding: clamp(13px, 3vw, 16px);
       font-family: var(--display);
-      font-size: clamp(1.1rem, 4.5vw, 1.3rem);
+      font-size: clamp(1rem, 4vw, 1.2rem);
       letter-spacing: 0.15em;
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(229,57,53,0.25);
       transition: all 0.2s;
-      min-height: 56px;
+      /* Makes it easy to tap on mobile */
+      min-height: 52px;
       touch-action: manipulation;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
     #cut-btn:hover:not(:disabled) {
       background: #EF5350;
       box-shadow: 0 6px 28px rgba(229,57,53,0.45);
       transform: translateY(-1px);
-    }
-    #cut-btn:active:not(:disabled) {
-      transform: scale(0.98);
     }
     #cut-btn:disabled {
       opacity: 0.5;
@@ -386,41 +284,15 @@
       transform: none;
     }
 
-    /* ── Progress bar ── */
-    #progress-wrap {
-      display: none;
-      margin-top: 10px;
-      background: #080A12;
-      border: 1px solid var(--border2);
-      border-radius: 6px;
-      overflow: hidden;
-      height: 4px;
-    }
-    #progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--red);
-      transition: width 0.3s ease;
-      border-radius: 6px;
-    }
-    #progress-bar.indeterminate {
-      width: 40%;
-      animation: slide 1.4s ease-in-out infinite;
-    }
-    @keyframes slide {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(350%); }
-    }
-
     /* ── Status ── */
     #status {
       display: none;
-      margin-top: 12px;
-      padding: 12px 14px;
+      margin-top: 14px;
+      padding: 11px 14px;
       border-radius: 8px;
-      font-size: clamp(0.66rem, 2.1vw, 0.74rem);
+      font-size: clamp(0.68rem, 2.2vw, 0.75rem);
       letter-spacing: 0.04em;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     #status.loading {
       display: block;
@@ -450,38 +322,31 @@
       border: 1px solid #145222;
       color: #4CAF50;
       border-radius: 8px;
-      padding: 16px 14px;
+      padding: 14px;
       font-family: var(--mono);
-      font-size: clamp(0.7rem, 2.3vw, 0.8rem);
+      font-size: clamp(0.68rem, 2.2vw, 0.78rem);
       letter-spacing: 0.06em;
       cursor: pointer;
       text-align: center;
       text-decoration: none;
-      min-height: 56px;
+      min-height: 48px;
       line-height: 1.4;
       touch-action: manipulation;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 700;
-    }
-    #download-btn:active {
-      opacity: 0.85;
     }
 
     /* ── Ad slots ── */
     .ad-slot {
-      margin: 14px 0;
+      margin: 16px 0;
       background: var(--card);
       border: 1px dashed var(--border2);
       border-radius: 8px;
-      min-height: 68px;
+      /* Responsive height */
+      min-height: 70px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--muted);
-      font-size: 0.56rem;
+      font-size: 0.58rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
@@ -489,44 +354,46 @@
     /* ── Footer ── */
     footer {
       text-align: center;
-      padding: 20px 16px 28px;
+      padding: 20px 16px;
       color: #171A26;
-      font-size: 0.56rem;
+      font-size: 0.58rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     /* ════════════════════════════════
-       RESPONSIVE
+       MOBILE BREAKPOINTS
        ════════════════════════════════ */
 
+    /* Tablet and below */
     @media (max-width: 600px) {
-      header { padding: 24px 12px 20px; }
-      .logo-svg { width: 38px; height: 38px; }
-      main { margin: 14px auto; padding: 0 10px; }
+      header { padding: 28px 12px 22px; }
 
-      /* Show steppers on touch screens */
-      .time-stepper { display: flex; }
+      .logo-row { gap: 10px; }
 
-      /* Stack time pickers vertically */
-      .time-row {
-        flex-direction: column;
-        gap: 14px;
-        align-items: stretch;
-      }
-      .time-half { width: 100%; }
+      /* Shrink the scissors logo */
+      .logo-svg { width: 40px; height: 40px; }
+
+      /* Stack time pickers vertically on very small screens */
+      .time-row { flex-direction: column; gap: 10px; }
+      .time-group { width: 100%; }
       .time-arrow {
-        display: none; /* replaced by labels "Start" / "End" */
+        padding-bottom: 0;
+        text-align: center;
+        font-size: 1rem;
+        transform: rotate(90deg); /* arrow points down on mobile */
+        display: block;
+        width: 100%;
       }
 
-      .fmt-btn { padding: 14px 8px; }
+      main { margin: 16px auto; padding: 0 10px; }
     }
 
+    /* Very small phones (iPhone SE etc) */
     @media (max-width: 380px) {
       h1 { font-size: 2rem; }
-      .tagline { font-size: 0.46rem; letter-spacing: 0.1em; }
+      .tagline { font-size: 0.48rem; letter-spacing: 0.12em; }
       .card { border-radius: 10px; }
-      .time-field input { min-height: 46px; }
     }
   </style>
 </head>
@@ -565,20 +432,12 @@
 
       <!-- URL -->
       <span class="label">🔗 YouTube URL</span>
-      <div class="url-row">
-        <input type="url" id="url-input"
-          placeholder="https://www.youtube.com/watch?v=..."
-          autocomplete="off" autocorrect="off" spellcheck="false"
-          inputmode="url"/>
-        <button id="paste-btn" aria-label="Paste URL">
-          📋 Paste
-        </button>
-      </div>
+      <input type="url" id="url-input" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" autocorrect="off" spellcheck="false"/>
 
       <!-- Preview -->
       <div id="video-preview">
         <img id="thumb" src="" alt="thumbnail"/>
-        <div id="video-info">
+        <div>
           <div id="video-title">—</div>
           <div id="video-duration">—</div>
         </div>
@@ -589,12 +448,8 @@
       <!-- Format -->
       <span class="label">Output Format</span>
       <div class="format-row">
-        <button class="fmt-btn active" data-fmt="mp4">
-          <span class="fmt-icon">🎬</span>MP4 — Video
-        </button>
-        <button class="fmt-btn" data-fmt="mp3">
-          <span class="fmt-icon">🎵</span>MP3 — Audio
-        </button>
+        <button class="fmt-btn active" data-fmt="mp4">MP4 — Video</button>
+        <button class="fmt-btn"        data-fmt="mp3">MP3 — Audio</button>
       </div>
 
       <hr class="divider"/>
@@ -603,61 +458,25 @@
       <span class="label">⏱ Clip Range</span>
       <div class="time-row">
 
-        <!-- START -->
-        <div class="time-half">
-          <div class="time-half-label">▶ Start</div>
-          <div class="time-group">
-            <div class="time-field">
-              <span>HH</span>
-              <input type="number" id="sh" min="0" max="23" value="0" inputmode="numeric"/>
-            </div>
-            <div class="time-field">
-              <span>MM</span>
-              <input type="number" id="sm" min="0" max="59" value="0" inputmode="numeric"/>
-            </div>
-            <div class="time-field">
-              <span>SS</span>
-              <input type="number" id="ss" min="0" max="59" value="15" inputmode="numeric"/>
-            </div>
-          </div>
+        <div class="time-group">
+          <div class="time-field"><span>HH</span><input type="number" id="sh" min="0" max="23" value="0"/></div>
+          <div class="time-field"><span>MM</span><input type="number" id="sm" min="0" max="59" value="0"/></div>
+          <div class="time-field"><span>SS</span><input type="number" id="ss" min="0" max="59" value="15"/></div>
         </div>
 
         <div class="time-arrow">→</div>
 
-        <!-- END -->
-        <div class="time-half">
-          <div class="time-half-label">⏹ End</div>
-          <div class="time-group">
-            <div class="time-field">
-              <span>HH</span>
-              <input type="number" id="eh" min="0" max="23" value="0" inputmode="numeric"/>
-            </div>
-            <div class="time-field">
-              <span>MM</span>
-              <input type="number" id="em" min="0" max="59" value="0" inputmode="numeric"/>
-            </div>
-            <div class="time-field">
-              <span>SS</span>
-              <input type="number" id="es" min="0" max="59" value="45" inputmode="numeric"/>
-            </div>
-          </div>
+        <div class="time-group">
+          <div class="time-field"><span>HH</span><input type="number" id="eh" min="0" max="23" value="0"/></div>
+          <div class="time-field"><span>MM</span><input type="number" id="em" min="0" max="59" value="0"/></div>
+          <div class="time-field"><span>SS</span><input type="number" id="es" min="0" max="59" value="45"/></div>
         </div>
 
       </div>
 
-      <!-- Live clip duration hint -->
-      <div id="clip-duration">Clip length: <span id="clip-len">—</span></div>
-
       <hr class="divider"/>
 
-      <button id="cut-btn">
-        <span id="cut-icon">✂</span>
-        <span id="cut-label">CUT &amp; DOWNLOAD</span>
-      </button>
-
-      <!-- Progress -->
-      <div id="progress-wrap"><div id="progress-bar" class="indeterminate"></div></div>
-
+      <button id="cut-btn">CUT &amp; DOWNLOAD</button>
       <div id="status"></div>
       <a id="download-btn" download>💾 Save Clip to Device</a>
 
@@ -674,7 +493,7 @@
     const API = "https://cutitlater-production.up.railway.app";
     let selectedFormat = "mp4";
 
-    /* ── Format toggle ── */
+    // Format toggle
     document.querySelectorAll(".fmt-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".fmt-btn").forEach(b => b.classList.remove("active"));
@@ -683,19 +502,7 @@
       });
     });
 
-    /* ── Paste button (mobile) ── */
-    document.getElementById("paste-btn").addEventListener("click", async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        const input = document.getElementById("url-input");
-        input.value = text.trim();
-        input.dispatchEvent(new Event("input"));
-      } catch (_) {
-        document.getElementById("url-input").focus();
-      }
-    });
-
-    /* ── Auto-fetch video info on URL input ── */
+    // Auto-fetch video info on URL paste
     let infoTimer = null;
     document.getElementById("url-input").addEventListener("input", e => {
       clearTimeout(infoTimer);
@@ -711,38 +518,12 @@
         if (!res.ok) return;
         document.getElementById("thumb").src = data.thumbnail;
         document.getElementById("video-title").textContent = data.title;
-        document.getElementById("video-duration").textContent = "Duration: " + formatDuration(data.duration);
+        document.getElementById("video-duration").textContent = formatDuration(data.duration);
         document.getElementById("video-preview").style.display = "flex";
       } catch (_) {}
     }
 
-    /* ── Clip duration calculator ── */
-    function toSeconds(h, m, s) {
-      return (+document.getElementById(h).value || 0) * 3600
-           + (+document.getElementById(m).value || 0) * 60
-           + (+document.getElementById(s).value || 0);
-    }
-    function updateClipDuration() {
-      const start = toSeconds("sh","sm","ss");
-      const end   = toSeconds("eh","em","es");
-      const diff  = end - start;
-      const badge = document.getElementById("clip-duration");
-      const len   = document.getElementById("clip-len");
-      if (diff > 0) {
-        badge.style.display = "block";
-        len.textContent = formatDuration(diff);
-      } else {
-        badge.style.display = "none";
-      }
-    }
-    ["sh","sm","ss","eh","em","es"].forEach(id => {
-      document.getElementById(id).addEventListener("input", updateClipDuration);
-    });
-    updateClipDuration();
-
-    /* ── Helpers ── */
     function formatDuration(s) {
-      s = Math.round(s);
       const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
       return h > 0 ? `${pad(h)}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
     }
@@ -750,23 +531,12 @@
     function buildTime(h, m, s) {
       return `${pad(document.getElementById(h).value||0)}:${pad(document.getElementById(m).value||0)}:${pad(document.getElementById(s).value||0)}`;
     }
-
     function setStatus(type, msg) {
       const el = document.getElementById("status");
-      el.className = type;
-      el.textContent = msg;
+      el.className = type; el.textContent = msg;
     }
 
-    function setLoading(on) {
-      const btn = document.getElementById("cut-btn");
-      const bar = document.getElementById("progress-wrap");
-      btn.disabled = on;
-      document.getElementById("cut-label").textContent = on ? "Processing…" : "CUT & DOWNLOAD";
-      document.getElementById("cut-icon").textContent  = on ? "⏳" : "✂";
-      bar.style.display = on ? "block" : "none";
-    }
-
-    /* ── Main action ── */
+    // Main action
     document.getElementById("cut-btn").addEventListener("click", async () => {
       const url = document.getElementById("url-input").value.trim();
       if (!url) { setStatus("error", "Paste a YouTube URL first."); return; }
@@ -774,9 +544,9 @@
       const start = buildTime("sh","sm","ss");
       const end   = buildTime("eh","em","es");
 
-      setLoading(true);
+      document.getElementById("cut-btn").disabled = true;
       document.getElementById("download-btn").style.display = "none";
-      setStatus("loading", "⏳ Fetching stream and cutting clip — this takes 10–30 seconds…");
+      setStatus("loading", "⏳ Fetching stream and cutting clip — this takes 10–30 seconds...");
 
       try {
         const res = await fetch(`${API}/clip`, {
@@ -792,13 +562,13 @@
         const dlBtn   = document.getElementById("download-btn");
         dlBtn.href     = blobUrl;
         dlBtn.download = `cutitnow_clip.${selectedFormat}`;
-        dlBtn.style.display = "flex";
+        dlBtn.style.display = "block";
         setStatus("success", `✅ Done! Clip ready — ${start} → ${end}`);
 
       } catch (err) {
         setStatus("error", `Error: ${err.message}`);
       } finally {
-        setLoading(false);
+        document.getElementById("cut-btn").disabled = false;
       }
     });
   </script>
