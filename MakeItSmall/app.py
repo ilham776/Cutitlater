@@ -37,13 +37,10 @@ def get_ydl_opts(format_str):
     opts = {
         "format": format_str,
         "quiet": True,
-        "extractor_args": {
-            "youtube": {
-                "skip": ["dash", "hls"],
-                "player_skip": ["js", "configs", "webpage"],
-            }
-        },
     }
+    if COOKIES_AVAILABLE:
+        opts["cookiefile"] = COOKIES_FILE
+    return opts
     if COOKIES_AVAILABLE:
         opts["cookiefile"] = COOKIES_FILE
     return opts
