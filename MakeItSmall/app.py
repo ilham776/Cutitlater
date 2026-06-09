@@ -7,10 +7,9 @@ import yt_dlp
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-
 # ── Setup ──────────────────────────────────────────────────────────────────
 import shutil
 ffmpeg_path = shutil.which("ffmpeg") or imageio_ffmpeg.get_ffmpeg_exe()
@@ -66,10 +65,7 @@ class ClipRequest(BaseModel):
 
 @app.get("/")
 def root():
-    return {
-        "status": "CutItNow API is running",
-        "cookies": "loaded" if COOKIES_AVAILABLE else "not found"
-    }
+    return RedirectResponse(url="/static/index.html")
 
 @app.get("/info")
 def get_info(url: str):
