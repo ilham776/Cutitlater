@@ -97,7 +97,7 @@ def cut_clip(req: ClipRequest):
         if req.format == "mp3":
             ydl_opts = get_ydl_opts("bestaudio")
         else:
-            ydl_opts = get_ydl_opts("bestvideo[height<=1080]+bestaudio/best")
+            ydl_opts = get_ydl_opts("bestvideo+bestaudio/best/best")
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(req.url, download=False)
