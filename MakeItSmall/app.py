@@ -1,3 +1,11 @@
+import subprocess
+
+# Install Node.js for yt-dlp signature solving
+try:
+    subprocess.run(["node", "--version"], check=True, capture_output=True)
+except FileNotFoundError:
+    subprocess.run(["nodeenv", "--prebuilt", "/tmp/node"], capture_output=True)
+    os.environ["PATH"] = "/tmp/node/bin:" + os.environ.get("PATH", "")
 import os
 import subprocess
 import uuid
