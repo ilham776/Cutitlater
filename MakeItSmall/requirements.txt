@@ -1,7 +1,6 @@
 fastapi
 uvicorn[standard]
 python-multipart
-yt-dlp
+yt-dlp[default]
 imageio-ffmpeg
 pydantic
-nodeenv
