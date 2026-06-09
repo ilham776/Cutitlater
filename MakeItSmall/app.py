@@ -12,8 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # ── Setup ──────────────────────────────────────────────────────────────────
-ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
-os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
+import shutil
+ffmpeg_path = shutil.which("ffmpeg") or imageio_ffmpeg.get_ffmpeg_exe()
 
 CLIPS_DIR = "clips"
 os.makedirs(CLIPS_DIR, exist_ok=True)
