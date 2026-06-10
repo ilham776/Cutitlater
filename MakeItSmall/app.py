@@ -34,7 +34,7 @@ COOKIES_AVAILABLE = setup_cookies()
 
 def get_ydl_opts(format_str):
     opts = {
-        "format": format_str,
+        "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
         "quiet": True,
         "js_runtimes": {"deno": {}},
     }
