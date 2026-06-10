@@ -36,7 +36,7 @@ def get_ydl_opts(format_str):
     opts = {
         "format": format_str,
         "quiet": True,
-        "js_runtimes": {"node": {}},
+        "js_runtimes": {"deno": {}},
     }
     if COOKIES_AVAILABLE:
         opts["cookiefile"] = COOKIES_FILE
