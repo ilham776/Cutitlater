@@ -1,13 +1,17 @@
-# Start with Python 3.11
 FROM python:3.11-slim
 
-# Install Node.js and system dependencies
+# Install system dependencies including curl for Deno install
 RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     ffmpeg \
-    libatomic1 \
+    curl \
+    unzip \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Deno (recommended JS runtime for yt-dlp)
+RUN curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
 
 # Set working directory
 WORKDIR /app
